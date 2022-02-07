@@ -27,4 +27,19 @@ class CurrenciesController < ApplicationController
   end
 
 
+  def conversion_result
+
+    #Parameters: {"from_currency"=>"AMD", "to_currency"=>"AED"}
+    @from_currency = params.fetch("from_currency")
+    @to_currency = params.fetch("to_currency")
+  
+
+    @raw_api_read = open("https://api.exchangerate.host/convert?from="+@from_currency+"&to="+@to_currency).read
+    @parsed_api_read = JSON.parse(@raw_api_read)
+    @conversion_rate_info = @parsed_api_read.fetch("info")
+    @conversion_rate = @conversion_rate_info.fetch("rate")
+
+    render({:template => "currency_templates/step_three.html.erb"})
+  end
+
 end
